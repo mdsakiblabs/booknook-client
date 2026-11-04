@@ -1,26 +1,105 @@
 @import "tailwindcss";
 
+/* ================================
+   BOOKNOOK — AFTER DARK
+   Global Design System
+================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+
+  /* Colors */
+  --background: #101211;
+  --surface: #191d1a;
+  --surface-elevated: #222823;
+
+  --accent: #d5ff3f;
+  --accent-hover: #c1ea2f;
+
+  --foreground: #f0eee8;
+  --muted: #a7ada5;
+  --border: #343934;
+
+  --copper: #d68c61;
+
+  /* Typography */
+  --font-heading: var(--font-instrument-serif);
+  --font-ui: var(--font-space-grotesk);
+  --font-body: var(--font-inter);
+
+  /* Radius */
+  --radius-card: 14px;
+  --radius-button: 8px;
+
+  /* Transitions */
+  --transition-fast: 180ms ease;
+  --transition-normal: 250ms ease;
 }
 
+/* Tailwind Theme Integration */
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-copper: var(--copper);
+
+  --font-heading: var(--font-heading);
+  --font-ui: var(--font-ui);
+  --font-sans: var(--font-body);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Base Reset */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
+  margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Selection */
+::selection {
+  background: var(--accent);
+  color: var(--background);
+}
+
+/* Links */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Buttons */
+button {
+  cursor: pointer;
+}
+
+/* Images */
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* Smooth interactions */
+button,
+a {
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
 }
