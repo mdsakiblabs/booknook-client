@@ -370,10 +370,13 @@ export default function BookDetailsPage() {
         </div>
       </section>
 
+     
+
       {/* Description & Tags */}
       <section className="border-y border-white/[0.07] bg-[#191D1A]">
-        <div className="mx-auto grid max-w-[1200px] gap-7 px-5 py-10 md:px-8 md:py-12 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-14 md:flex justify-between">
-          <div>
+        <div className="mx-auto grid max-w-[1200px] items-start gap-8 px-5 py-10 md:px-8 md:py-12 lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-12">
+          {/* Story */}
+          <div className="min-w-0">
             <p className="font-ui text-[10px] font-bold uppercase tracking-[0.16em] text-[#D5FF3F]">
               01 / The story
             </p>
@@ -383,33 +386,34 @@ export default function BookDetailsPage() {
             </h2>
 
             <div className="mt-4 h-0.5 w-10 bg-[#D5FF3F]" />
-          </div>
 
-          <div className="lg:pt-1">
-            <p className="whitespace-pre-line text-[14px] leading-[1.85] text-[#C5C9C1] sm:text-[15px]">
+            <p className="mt-6 whitespace-pre-line text-[14px] leading-[1.85] text-[#C5C9C1] sm:text-[15px]">
               {book.description ||
                 "No description is available for this book yet. Explore its details and discover what awaits inside."}
             </p>
-
-            {Array.isArray(book.tags) && book.tags.length > 0 && (
-              <div className="mt-6 border-t border-white/[0.08] pt-5">
-                <p className="mb-3 font-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#A7ADA5]">
-                  Explore the themes
-                </p>
-
-                <div className="flex flex-wrap gap-2">
-                  {book.tags.map((tag, index) => (
-                    <span
-                      key={`${tag}-${index}`}
-                      className="rounded-md border border-white/10 bg-[#222823] px-3 py-2 text-xs text-[#D0D2CC] transition-colors hover:border-[#D5FF3F]/40 hover:text-[#D5FF3F]"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
+
+          {/* Themes Box */}
+          {Array.isArray(book.tags) && book.tags.length > 0 && (
+            <div className="rounded-xl border border-white/[0.09] bg-[#222823] p-5 sm:p-6 lg:mt-8">
+              <p className="font-ui text-[10px] font-bold uppercase tracking-[0.14em] text-[#D5FF3F]">
+                Explore the themes
+              </p>
+
+              <div className="mb-5 mt-4 h-px bg-white/[0.08]" />
+
+              <div className="flex flex-wrap gap-2">
+                {book.tags.map((tag, index) => (
+                  <span
+                    key={`${tag}-${index}`}
+                    className="rounded-md border border-white/10 bg-[#191D1A] px-3 py-2 text-xs text-[#D0D2CC] transition-colors hover:border-[#D5FF3F]/40 hover:text-[#D5FF3F]"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
