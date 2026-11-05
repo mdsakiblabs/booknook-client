@@ -68,7 +68,7 @@ const Navbar = () => {
 
               <Link
                 href="/register"
-                className="rounded-lg bg-accent px-3 py-2.5 font-ui text-xs font-bold text-[#101211] transition-colors hover:bg-accent-hover sm:px-5 sm:text-sm"
+                className="rounded-lg bg-accent px-3 py-2.5 font-ui text-xs font-bold !text-[#101211] transition-colors hover:bg-accent-hover sm:px-5 sm:text-sm"
               >
                 Get Started <span aria-hidden="true">↗</span>
               </Link>

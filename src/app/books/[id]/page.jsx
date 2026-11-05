@@ -512,7 +512,7 @@ export default function BookDetailsPage() {
 
             <Link
               href="/books"
-              className="inline-flex w-fit shrink-0 items-center gap-3 rounded-lg bg-[#D5FF3F] px-6 py-3.5 font-ui text-xs font-bold uppercase tracking-wider text-black transition-all hover:-translate-y-0.5 hover:bg-[#C1EA2F]"
+              className="inline-flex w-fit shrink-0 items-center gap-3 rounded-lg bg-[#D5FF3F] px-6 py-3.5 font-ui text-xs font-bold uppercase tracking-wider !text-[#101211] transition-all hover:-translate-y-0.5 hover:bg-[#C1EA2F]"
             >
               Explore all books <span className="text-base">↗</span>
             </Link>
