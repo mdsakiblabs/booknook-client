@@ -303,7 +303,7 @@ export default function MyBooksPage() {
               </Link>
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {books.map((book) => (
                 <article
                   key={book._id}
