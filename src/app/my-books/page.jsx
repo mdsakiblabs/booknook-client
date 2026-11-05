@@ -122,18 +122,25 @@ export default function MyBooksPage() {
 
     const fetchMyBooks = async () => {
       try {
-        const response = await fetch(`${API_URL}/books`);
+        const { data, error: tokenError } = await authClient.token();
+
+        if (tokenError || !data?.token) {
+          throw new Error("Unable to verify your session.");
+        }
+
+        const response = await fetch(`${API_URL}/books?mine=true`, {
+          headers: {
+            Authorization: `Bearer ${data.token}`,
+          },
+        });
+
         const result = await response.json();
 
         if (!response.ok) {
-          throw new Error(result.message || "Failed to load books.");
+          throw new Error(result.message || "Failed to load your books.");
         }
 
-        const myBooks = (result.books || []).filter(
-          (book) => book.addedByEmail === session.user.email,
-        );
-
-        setBooks(myBooks);
+        setBooks(result.books || []);
       } catch (err) {
         setError(err.message || "Unable to load your books.");
       } finally {
