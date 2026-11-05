@@ -507,7 +507,7 @@ export default function AddBookPage() {
               )}
 
               {/* Submit */}
-              <div className="flex flex-col gap-4 border-t border-border pt-7 sm:flex-row sm:items-center sm:justify-between">
+              <div className="hidden flex-col gap-4 border-t border-border pt-7 sm:flex-row sm:items-center sm:justify-between lg:flex">
                 <p className="text-xs leading-5 text-muted">
                   Fields marked with * are required.
                   <br />
@@ -690,6 +690,22 @@ export default function AddBookPage() {
                 A growing collection. A new story. Another reason to explore.
               </p>
             </aside>
+          </div>
+          {/* Mobile Submit */}
+          <div className="mt-8 flex flex-col gap-4 border-t border-border pt-7 lg:hidden">
+            <p className="text-xs leading-5 text-muted">
+              Fields marked with * are required.
+              <br />
+              Your book will be added to the library collection.
+            </p>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-xl bg-accent px-8 py-4 font-ui text-sm font-bold text-[#101211] transition-all hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(213,255,63,0.12)] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {loading ? "ADDING TO COLLECTION..." : "ADD BOOK TO LIBRARY ↗"}
+            </button>
           </div>
         </form>
       </div>
