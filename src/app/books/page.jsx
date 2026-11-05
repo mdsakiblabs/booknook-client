@@ -20,6 +20,7 @@ export default function BooksPage() {
   const [quickFilter, setQuickFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const featuredBook = books.find((book) => book.featured) || books[0];
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -128,7 +129,7 @@ export default function BooksPage() {
   return (
     <main className="min-h-screen bg-[#101211]">
       {/* Page Hero */}
-      <section className="relative overflow-hidden border-b border-white/[0.07] px-5 pb-16 pt-20 md:px-10 md:pb-20 md:pt-28">
+      <section className="relative overflow-hidden border-b border-white/[0.07] px-5 pb-16 pt-20 md:px-10 md:pb-20 md:pt-20">
         <div className="pointer-events-none absolute -right-20 top-0 h-80 w-80 rounded-full bg-[#D5FF3F]/[0.045] blur-[100px]" />
 
         <div className="relative mx-auto max-w-[1440px]">
@@ -154,7 +155,7 @@ export default function BooksPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-4 lg:pb-2">
+            {/* <div className="flex items-center gap-4 lg:pb-2">
               <div className="h-12 w-px bg-white/15" />
 
               <div>
@@ -165,6 +166,118 @@ export default function BooksPage() {
                 <p className="mt-1 font-ui text-[10px] uppercase tracking-[0.2em] text-muted">
                   Books in collection
                 </p>
+              </div>
+            </div> */}
+
+            <div className="relative w-full max-w-md self-start lg:ml-auto lg:mt-4">
+              <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-[#D5FF3F]/[0.07] blur-[80px]" />
+
+              <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#191D1A] p-5 sm:p-6">
+                <div className="mb-5 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#D5FF3F]" />
+                    <p className="font-ui text-[10px] font-bold uppercase tracking-[0.2em] text-[#D5FF3F]">
+                      Editor's Selection
+                    </p>
+                  </div>
+
+                  <span className="font-ui text-[10px] text-[#A7ADA5]">
+                    BOOKNOOK / 001
+                  </span>
+                </div>
+
+                {loading ? (
+                  <div className="flex gap-5">
+                    <div className="h-44 w-32 shrink-0 animate-pulse rounded-lg bg-[#222823]" />
+                    <div className="flex-1 space-y-4 py-3">
+                      <div className="h-3 w-20 animate-pulse rounded bg-[#222823]" />
+                      <div className="h-6 w-full animate-pulse rounded bg-[#222823]" />
+                      <div className="h-3 w-2/3 animate-pulse rounded bg-[#222823]" />
+                    </div>
+                  </div>
+                ) : featuredBook ? (
+                  <div className="flex gap-5">
+                    <div className="relative h-44 w-32 shrink-0 overflow-hidden rounded-lg bg-[#222823] shadow-2xl">
+                      <img
+                        src={featuredBook.image || "/placeholder-book.png"}
+                        alt={featuredBook.title}
+                        className="h-full w-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                    </div>
+
+                    <div className="flex min-w-0 flex-1 flex-col justify-center">
+                      <p className="mb-3 font-ui text-[9px] font-bold uppercase tracking-[0.17em] text-[#D5FF3F]">
+                        {featuredBook.category || "Featured Collection"}
+                      </p>
+
+                      <h3 className="line-clamp-3 font-heading text-3xl leading-tight text-[#F0EEE8]">
+                        {featuredBook.title}
+                      </h3>
+
+                      <p className="mt-2 line-clamp-1 text-xs text-[#A7ADA5]">
+                        by {featuredBook.author}
+                      </p>
+
+                      <div className="mt-4 flex items-center gap-2">
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full ${
+                            featuredBook.availableCopies > 0
+                              ? "bg-[#D5FF3F]"
+                              : "bg-red-400"
+                          }`}
+                        />
+
+                        <span className="text-[10px] text-[#A7ADA5]">
+                          {featuredBook.availableCopies > 0
+                            ? `${featuredBook.availableCopies} copies available`
+                            : "Currently unavailable"}
+                        </span>
+                      </div>
+
+                      <Link
+                        href={`/books/${featuredBook._id}`}
+                        className="mt-4 inline-flex w-fit items-center gap-2 font-ui text-[10px] font-bold uppercase tracking-wider text-[#D5FF3F] transition-all hover:gap-3"
+                      >
+                        Discover Book <span>↗</span>
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="py-12 text-center text-sm text-[#A7ADA5]">
+                    No featured books available yet.
+                  </div>
+                )}
+
+                <div className="mt-6 flex items-center justify-between border-t border-white/[0.08] pt-4">
+                  <div>
+                    <p className="font-heading text-3xl text-[#F0EEE8]">
+                      {loading
+                        ? "—"
+                        : stats.totalBooks.toString().padStart(2, "0")}
+                    </p>
+                    <p className="mt-1 font-ui text-[9px] uppercase tracking-wider text-[#A7ADA5]">
+                      Books in collection
+                    </p>
+                  </div>
+
+                  <div className="h-9 w-px bg-white/10" />
+
+                  <div>
+                    <p className="font-heading text-3xl text-[#F0EEE8]">
+                      {loading
+                        ? "—"
+                        : stats.totalCategories.toString().padStart(2, "0")}
+                    </p>
+                    <p className="mt-1 font-ui text-[9px] uppercase tracking-wider text-[#A7ADA5]">
+                      Categories
+                    </p>
+                  </div>
+
+                  <span className="font-heading text-4xl italic text-[#D5FF3F]/30">
+                    B.
+                  </span>
+                </div>
               </div>
             </div>
           </div>
