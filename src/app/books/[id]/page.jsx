@@ -342,7 +342,7 @@ export default function BookDetailsPage() {
             </div>
 
             {/* Actions */}
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-5 hidden flex-col gap-3 sm:flex-row lg:flex">
               <button
                 onClick={() => setShowBorrowModal(true)}
                 disabled={available <= 0}
@@ -364,7 +364,7 @@ export default function BookDetailsPage() {
               </Link>
             </div>
 
-            <p className="mt-4 text-xs leading-5 text-[#A7ADA5]/75">
+            <p className="mt-4 hidden text-xs leading-5 text-[#A7ADA5]/75 lg:block">
               Borrow your next favourite read and discover something new.
             </p>
           </div>
@@ -460,6 +460,34 @@ export default function BookDetailsPage() {
         )}
       </section>
 
+      {/* Mobile Actions - After All Book Information */}
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-3 px-5 pb-10 lg:hidden md:px-8">
+        <button
+          onClick={() => setShowBorrowModal(true)}
+          disabled={available <= 0}
+          className="group flex w-full items-center justify-center gap-3 rounded-lg bg-[#D5FF3F] px-6 py-4 font-ui text-xs font-bold uppercase tracking-wider text-[#101211] transition-all hover:bg-[#C1EA2F] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          {available > 0 ? "Borrow this book" : "Currently unavailable"}
+
+          {available > 0 && (
+            <span className="text-base transition-transform group-hover:translate-x-1">
+              ↗
+            </span>
+          )}
+        </button>
+
+        <Link
+          href="/books"
+          className="flex w-full items-center justify-center rounded-lg border border-white/10 px-6 py-4 font-ui text-xs font-semibold uppercase tracking-wider text-[#A7ADA5] transition-colors hover:border-[#D5FF3F]/40 hover:text-[#F0EEE8] active:scale-[0.98]"
+        >
+          Explore library
+        </Link>
+
+        <p className="text-center text-xs leading-5 text-[#A7ADA5]/75">
+          Borrow your next favourite read and discover something new.
+        </p>
+      </div>
+
       {/* Bottom CTA */}
       <section className="px-5 pb-12 md:px-8 md:pb-16">
         <div className="relative mx-auto max-w-[1200px] overflow-hidden rounded-2xl border border-[#D5FF3F]/20 bg-[#191D1A] px-6 py-8 sm:px-9 sm:py-9 lg:px-11">
@@ -484,7 +512,7 @@ export default function BookDetailsPage() {
 
             <Link
               href="/books"
-              className="inline-flex w-fit shrink-0 items-center gap-3 rounded-lg bg-[#D5FF3F] px-6 py-3.5 font-ui text-xs font-bold uppercase tracking-wider text-[#101211] transition-all hover:-translate-y-0.5 hover:bg-[#C1EA2F]"
+              className="inline-flex w-fit shrink-0 items-center gap-3 rounded-lg bg-[#D5FF3F] px-6 py-3.5 font-ui text-xs font-bold uppercase tracking-wider text-black transition-all hover:-translate-y-0.5 hover:bg-[#C1EA2F]"
             >
               Explore all books <span className="text-base">↗</span>
             </Link>

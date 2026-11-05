@@ -155,20 +155,6 @@ export default function BooksPage() {
               </p>
             </div>
 
-            {/* <div className="flex items-center gap-4 lg:pb-2">
-              <div className="h-12 w-px bg-white/15" />
-
-              <div>
-                <p className="font-heading text-4xl text-foreground">
-                  {loading ? "—" : stats.totalBooks.toString().padStart(2, "0")}
-                </p>
-
-                <p className="mt-1 font-ui text-[10px] uppercase tracking-[0.2em] text-muted">
-                  Books in collection
-                </p>
-              </div>
-            </div> */}
-
             <div className="relative w-full max-w-md self-start lg:ml-auto lg:mt-4">
               <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-[#D5FF3F]/[0.07] blur-[80px]" />
 
@@ -497,7 +483,7 @@ export default function BooksPage() {
 
           {/* Book Collection */}
           {!loading && !error && filteredBooks.length > 0 && (
-            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-5 md:grid-cols-3 xl:grid-cols-4">
+            <div className=" flex flex-col gap-3 md:grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-5 md:grid-cols-3 xl:grid-cols-4">
               {filteredBooks.map((book) => (
                 <BookCard key={book._id} book={book} />
               ))}
