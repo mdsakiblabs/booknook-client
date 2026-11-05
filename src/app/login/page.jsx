@@ -70,6 +70,32 @@ export default function LoginPage() {
     }
   };
 
+  const handleGitHubLogin = async () => {
+    setError("");
+    setGoogleLoading(true);
+
+    const callbackURL = new URLSearchParams(window.location.search).get(
+      "callbackURL",
+    );
+
+    const redirectTo =
+      callbackURL && callbackURL.startsWith("/") ? callbackURL : "/";
+
+    try {
+      const { error } = await authClient.signIn.social({
+        provider: "github",
+        callbackURL: redirectTo,
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+    } catch (err) {
+      setError(err.message || "GitHub login failed.");
+      setGoogleLoading(false);
+    }
+  };
+
   return (
     <section className="flex min-h-screen items-center justify-center bg-background px-5 py-20">
       <div className="w-full max-w-md">
@@ -163,6 +189,15 @@ export default function LoginPage() {
             className="flex w-full items-center justify-center gap-3 rounded-lg border border-border bg-background py-4 font-ui text-sm font-semibold text-foreground transition-colors hover:border-accent disabled:opacity-50"
           >
             {googleLoading ? "CONNECTING TO GOOGLE..." : "CONTINUE WITH GOOGLE"}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleGitHubLogin}
+            disabled={googleLoading || loading}
+            className="flex w-full items-center justify-center gap-3 rounded-lg border border-border bg-background py-4 font-ui text-sm font-semibold text-foreground transition-colors hover:border-accent disabled:opacity-50"
+          >
+            {googleLoading ? "CONNECTING TO GITHUB..." : "CONTINUE WITH GITHUB"}
           </button>
 
           <p className="text-center text-sm text-muted">
