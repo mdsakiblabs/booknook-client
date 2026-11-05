@@ -113,14 +113,36 @@ export default function MyBorrowsPage() {
   }
 
   const getBorrowStatus = (returnDate) => {
-    const today = new Date();
-    const deadline = new Date(returnDate);
-
-    if (today > deadline) {
-      return "OVERDUE";
+    if (!returnDate) {
+      return {
+        label: "UNKNOWN",
+        color: "text-[#A7ADA5]",
+        background: "bg-white/[0.05]",
+        border: "border-white/10",
+      };
     }
 
-    return "ON TIME";
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const deadline = new Date(returnDate);
+    deadline.setHours(0, 0, 0, 0);
+
+    if (today > deadline) {
+      return {
+        label: "OVERDUE",
+        color: "text-red-400",
+        background: "bg-red-400/[0.07]",
+        border: "border-red-400/25",
+      };
+    }
+
+    return {
+      label: "ON TIME",
+      color: "text-[#D5FF3F]",
+      background: "bg-[#D5FF3F]/[0.07]",
+      border: "border-[#D5FF3F]/25",
+    };
   };
 
   const formatDate = (date) => {
