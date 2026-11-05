@@ -16,6 +16,7 @@ export default function RegisterPage() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -70,6 +71,25 @@ export default function RegisterPage() {
       setError(err.message || "Registration failed.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    setError("");
+    setGoogleLoading(true);
+
+    try {
+      const { error } = await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+    } catch (err) {
+      setError(err.message || "Google sign up failed.");
+      setGoogleLoading(false);
     }
   };
 
@@ -174,6 +194,23 @@ export default function RegisterPage() {
             className="w-full rounded-lg bg-accent py-4 font-ui text-sm font-bold text-[#101211] transition-colors hover:bg-accent-hover disabled:opacity-50"
           >
             {loading ? "CREATING ACCOUNT..." : "CREATE ACCOUNT ↗"}
+          </button>
+
+          <div className="relative flex items-center py-2">
+            <div className="flex-grow border-t border-border"></div>
+            <span className="px-4 text-xs uppercase tracking-widest text-muted">
+              Or continue with
+            </span>
+            <div className="flex-grow border-t border-border"></div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleGoogleSignUp}
+            disabled={googleLoading || loading}
+            className="flex w-full items-center justify-center gap-3 rounded-lg border border-border bg-background py-4 font-ui text-sm font-semibold text-foreground transition-colors hover:border-accent disabled:opacity-50"
+          >
+            {googleLoading ? "CONNECTING TO GOOGLE..." : "SIGN UP WITH GOOGLE"}
           </button>
 
           <p className="text-center text-sm text-muted">
