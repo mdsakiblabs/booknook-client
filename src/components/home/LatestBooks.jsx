@@ -107,7 +107,7 @@ const LatestBooks = () => {
         {/* Book Grid */}
         {!loading && !error && books.length > 0 && (
           <>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-5 md:grid-cols-3 lg:grid-cols-4">
+            <div className="flex flex-col gap-3 md:grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-5 md:grid-cols-3 lg:grid-cols-4">
               {books.map((book) => (
                 <BookCard key={book._id} book={book} />
               ))}
