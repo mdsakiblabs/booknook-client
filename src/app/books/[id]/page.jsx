@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -61,12 +62,12 @@ export default function BookDetailsPage() {
 
   const handleBorrow = async () => {
     if (!returnDate) {
-      alert("Please select a return date.");
+      toast.error("Please select a return date.");
       return;
     }
 
     if (book.availableCopies <= 0) {
-      alert("This book is currently unavailable.");
+      toast.error("This book is currently unavailable.");
       return;
     }
 
@@ -105,9 +106,9 @@ export default function BookDetailsPage() {
       setShowBorrowModal(false);
       setReturnDate("");
 
-      alert("Book borrowed successfully!");
+      toast.success("Book borrowed successfully!");
     } catch (err) {
-      alert(err.message || "Something went wrong.");
+      toast.error(err.message || "Something went wrong.");
     } finally {
       setIsBorrowing(false);
     }
@@ -369,8 +370,6 @@ export default function BookDetailsPage() {
           </div>
         </div>
       </section>
-
-     
 
       {/* Description & Tags */}
       <section className="border-y border-white/[0.07] bg-[#191D1A]">

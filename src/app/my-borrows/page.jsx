@@ -1,9 +1,11 @@
 "use client";
+
 import BookCard from "@/components/books/BookCard";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -85,9 +87,9 @@ export default function MyBorrowsPage() {
 
       setBorrows((prev) => prev.filter((borrow) => borrow._id !== borrowId));
 
-      alert("Book returned successfully!");
+      toast.success("Book returned successfully!");
     } catch (err) {
-      alert(err.message || "Something went wrong.");
+      toast.error(err.message || "Something went wrong.");
     }
   };
 

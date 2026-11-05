@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -69,9 +70,9 @@ export default function MyBooksPage() {
       );
 
       setEditingBook(null);
-      alert("Book updated successfully!");
+      toast.success("Book updated successfully!");
     } catch (err) {
-      alert(err.message || "Something went wrong.");
+      toast.error(err.message || "Something went wrong.");
     } finally {
       setSaving(false);
     }
@@ -106,9 +107,9 @@ export default function MyBooksPage() {
 
       setBooks((prev) => prev.filter((book) => book._id !== bookId));
 
-      alert("Book deleted successfully!");
+      toast.success("Book deleted successfully!");
     } catch (err) {
-      alert(err.message || "Something went wrong.");
+      toast.error(err.message || "Something went wrong.");
     }
   };
 
@@ -171,6 +172,7 @@ export default function MyBooksPage() {
       </div>
     );
   }
+
   const editModal = editingBook && (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
       <div className="w-full max-w-xl rounded-2xl border border-border bg-surface p-6">
@@ -240,6 +242,7 @@ export default function MyBooksPage() {
       </div>
     </div>
   );
+
   return (
     <>
       {editModal}
@@ -325,12 +328,14 @@ export default function MyBooksPage() {
                     >
                       VIEW DETAILS ↗
                     </Link>
+
                     <button
                       onClick={() => handleEdit(book)}
                       className="mt-3 w-full rounded-lg border border-accent px-4 py-3 text-sm font-bold text-accent hover:bg-accent hover:text-background"
                     >
                       EDIT BOOK
                     </button>
+
                     <button
                       onClick={() => handleDelete(book._id)}
                       className="mt-2 w-full rounded-lg border border-red-500/40 px-4 py-3 text-sm font-bold text-red-400 hover:bg-red-500 hover:text-white"
