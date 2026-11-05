@@ -55,6 +55,41 @@ export default function MyBorrowsPage() {
     fetchBorrows();
   }, [session, isPending, router]);
 
+  const handleReturn = async (borrowId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to return this book?",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const { data, error: tokenError } = await authClient.token();
+
+      if (tokenError || !data?.token) {
+        throw new Error("Unable to verify your session.");
+      }
+
+      const response = await fetch(`${API_URL}/borrows/${borrowId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${data.token}`,
+        },
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to return book.");
+      }
+
+      setBorrows((prev) => prev.filter((borrow) => borrow._id !== borrowId));
+
+      alert("Book returned successfully!");
+    } catch (err) {
+      alert(err.message || "Something went wrong.");
+    }
+  };
+
   if (isPending || loading) {
     return (
       <div className="flex min-h-[70vh] items-center justify-center bg-background">
@@ -146,10 +181,17 @@ export default function MyBorrowsPage() {
                     </div>
                   </div>
 
-                  <div className="mt-6">
-                    <span className="inline-block rounded-full border border-accent/30 bg-accent/10 px-3 py-1.5 font-ui text-xs font-semibold text-accent">
+                  <div className="mt-6 flex flex-col gap-4">
+                    <span className="w-fit rounded-full border border-accent/30 bg-accent/10 px-3 py-1.5 font-ui text-xs font-semibold text-accent">
                       CURRENTLY BORROWED
                     </span>
+
+                    <button
+                      onClick={() => handleReturn(borrow._id)}
+                      className="w-full rounded-lg border border-red-400/30 px-5 py-3 font-ui text-sm font-bold text-red-400 transition-colors hover:bg-red-400/10"
+                    >
+                      RETURN BOOK ↗
+                    </button>
                   </div>
                 </div>
               </article>
