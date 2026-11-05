@@ -15,6 +15,9 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const callbackURL = new URLSearchParams(window.location.search).get(
+      "callbackURL",
+    );
     setError("");
     setLoading(true);
 
@@ -28,7 +31,10 @@ export default function LoginPage() {
         throw new Error(loginError.message);
       }
 
-      router.push("/");
+      const redirectTo =
+        callbackURL && callbackURL.startsWith("/") ? callbackURL : "/";
+
+      router.push(redirectTo);
       router.refresh();
     } catch (err) {
       setError(err.message || "Login failed.");
