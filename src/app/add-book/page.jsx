@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
 const initialForm = {
@@ -13,10 +14,20 @@ const initialForm = {
 };
 
 export default function AddBookPage() {
+  const router = useRouter();
+  const { data: session, isPending } = authClient.useSession();
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (isPending) return;
+
+    if (!session?.user) {
+      router.replace("/login?callbackURL=/add-book");
+    }
+  }, [session, isPending, router]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -68,6 +79,9 @@ export default function AddBookPage() {
     }
   };
 
+  if (isPending || !session?.user) {
+    return null;
+  }
   return (
     <section className="min-h-screen bg-background px-5 py-20 md:px-10">
       <div className="mx-auto max-w-3xl">
