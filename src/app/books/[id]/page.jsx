@@ -16,6 +16,8 @@ export default function BookDetailsPage() {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showBorrowModal, setShowBorrowModal] = useState(false);
+  const [returnDate, setReturnDate] = useState("");
 
   useEffect(() => {
     if (isPending) return;
@@ -56,6 +58,51 @@ export default function BookDetailsPage() {
     fetchBook();
   }, [id, session, isPending, router]);
 
+  const handleBorrow = async () => {
+    if (!returnDate) {
+      alert("Please select a return date.");
+      return;
+    }
+
+    try {
+      const { data, error: tokenError } = await authClient.token();
+
+      if (tokenError || !data?.token) {
+        throw new Error("Unable to verify your session.");
+      }
+
+      const response = await fetch(`${API_URL}/borrows`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${data.token}`,
+        },
+        body: JSON.stringify({
+          bookId: book._id,
+          returnDate,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to borrow book.");
+      }
+
+      setBook((prev) => ({
+        ...prev,
+        availableCopies: prev.availableCopies - 1,
+      }));
+
+      setShowBorrowModal(false);
+      setReturnDate("");
+
+      alert("Book borrowed successfully!");
+    } catch (err) {
+      alert(err.message || "Something went wrong.");
+    }
+  };
+
   if (isPending || loading) {
     return (
       <div className="flex min-h-[70vh] items-center justify-center bg-background">
@@ -88,7 +135,71 @@ export default function BookDetailsPage() {
   }
 
   return (
+    
     <section className="min-h-screen bg-background px-5 py-20 md:px-10">
+        {showBorrowModal && (
+  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-5 backdrop-blur-sm">
+    <div className="w-full max-w-md rounded-2xl border border-border bg-surface p-7 shadow-2xl">
+
+      <div className="mb-7 flex items-start justify-between">
+        <div>
+          <p className="font-ui text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+            BookNook Library
+          </p>
+
+          <h2 className="mt-3 font-heading text-3xl text-foreground">
+            Borrow this book
+          </h2>
+        </div>
+
+        <button
+          onClick={() => setShowBorrowModal(false)}
+          className="text-xl text-muted transition-colors hover:text-foreground"
+        >
+          ✕
+        </button>
+      </div>
+
+      <p className="mb-2 text-sm text-muted">
+        You're borrowing:
+      </p>
+
+      <p className="mb-7 font-ui text-base font-semibold text-foreground">
+        {book.title}
+      </p>
+
+      <label className="mb-3 block font-ui text-xs font-semibold uppercase tracking-wider text-muted">
+        Return date
+      </label>
+
+      <input
+        type="date"
+        value={returnDate}
+        min={new Date(Date.now() + 86400000).toISOString().split("T")[0]}
+        onChange={(e) => setReturnDate(e.target.value)}
+        className="w-full rounded-lg border border-border bg-[#101211] px-4 py-3 text-sm text-foreground outline-none focus:border-accent"
+      />
+
+      <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+
+        <button
+          onClick={() => setShowBorrowModal(false)}
+          className="rounded-lg border border-border px-5 py-3 font-ui text-sm font-semibold text-muted transition-colors hover:border-foreground hover:text-foreground"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={handleBorrow}
+          className="rounded-lg bg-accent px-5 py-3 font-ui text-sm font-bold text-[#101211] transition-colors hover:bg-accent-hover"
+        >
+          CONFIRM BORROW ↗
+        </button>
+
+      </div>
+    </div>
+  </div>
+)}
       <div className="mx-auto max-w-[1200px]">
         <Link
           href="/books"
@@ -156,10 +267,13 @@ export default function BookDetailsPage() {
 
             <div className="mt-10">
               <button
-                disabled={true}
-                className="w-full cursor-not-allowed rounded-lg bg-accent px-7 py-4 font-ui text-sm font-bold text-[#101211] opacity-60 sm:w-auto"
+                onClick={() => setShowBorrowModal(true)}
+                disabled={book.availableCopies <= 0}
+                className="w-full rounded-lg bg-accent px-7 py-4 font-ui text-sm font-bold text-[#101211] transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto"
               >
-                BORROW BOOK — COMING NEXT
+                {book.availableCopies > 0
+                  ? "BORROW THIS BOOK ↗"
+                  : "CURRENTLY UNAVAILABLE"}
               </button>
             </div>
           </div>
