@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
+import ConfirmationModal from "@/components/shared/ConfirmationModal";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -17,6 +18,9 @@ export default function MyBooksPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editingBook, setEditingBook] = useState(null);
+  const [selectedDeleteBook, setSelectedDeleteBook] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+
   const [editForm, setEditForm] = useState({
     title: "",
     author: "",
@@ -24,6 +28,7 @@ export default function MyBooksPage() {
     image: "",
     description: "",
   });
+
   const [saving, setSaving] = useState(false);
 
   const handleEdit = (book) => {
@@ -79,11 +84,7 @@ export default function MyBooksPage() {
   };
 
   const handleDelete = async (bookId) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this book?",
-    );
-
-    if (!confirmed) return;
+    setDeleting(true);
 
     try {
       const { data, error: tokenError } = await authClient.token();
@@ -107,9 +108,12 @@ export default function MyBooksPage() {
 
       setBooks((prev) => prev.filter((book) => book._id !== bookId));
 
+      setSelectedDeleteBook(null);
       toast.success("Book deleted successfully!");
     } catch (err) {
       toast.error(err.message || "Something went wrong.");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -247,6 +251,15 @@ export default function MyBooksPage() {
     <>
       {editModal}
 
+      <ConfirmationModal
+        isOpen={!!selectedDeleteBook}
+        onClose={() => setSelectedDeleteBook(null)}
+        onConfirm={() => handleDelete(selectedDeleteBook._id)}
+        book={selectedDeleteBook}
+        actionType="delete"
+        isLoading={deleting}
+      />
+
       <section className="min-h-screen bg-background px-5 py-16 md:px-10">
         <div className="mx-auto max-w-[1200px]">
           <div className="mb-12 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
@@ -337,7 +350,7 @@ export default function MyBooksPage() {
                     </button>
 
                     <button
-                      onClick={() => handleDelete(book._id)}
+                      onClick={() => setSelectedDeleteBook(book)}
                       className="mt-2 w-full rounded-lg border border-red-500/40 px-4 py-3 text-sm font-bold text-red-400 hover:bg-red-500 hover:text-white"
                     >
                       DELETE BOOK
