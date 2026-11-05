@@ -1,5 +1,5 @@
 "use client";
-
+import BookCard from "@/components/books/BookCard";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -15,6 +15,7 @@ export default function MyBorrowsPage() {
   const [borrows, setBorrows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [returningId, setReturningId] = useState(null);
 
   useEffect(() => {
     if (isPending) return;
@@ -111,6 +112,27 @@ export default function MyBorrowsPage() {
     );
   }
 
+  const getBorrowStatus = (returnDate) => {
+    const today = new Date();
+    const deadline = new Date(returnDate);
+
+    if (today > deadline) {
+      return "OVERDUE";
+    }
+
+    return "ON TIME";
+  };
+
+  const formatDate = (date) => {
+    if (!date) return "N/A";
+
+    return new Date(date).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   return (
     <section className="min-h-screen bg-background px-5 py-16 md:px-10">
       <div className="mx-auto max-w-[1200px]">
@@ -146,56 +168,71 @@ export default function MyBorrowsPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {borrows.map((borrow) => (
-              <article
-                key={borrow._id}
-                className="overflow-hidden rounded-2xl border border-border bg-surface transition-colors hover:border-accent/40"
-              >
-                <div className="aspect-[16/10] overflow-hidden bg-[#222823]">
-                  <img
-                    src={borrow.bookImage || "/placeholder-book.png"}
-                    alt={borrow.bookTitle}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {borrows.map((borrow) => {
+              const status = getBorrowStatus(borrow.returnDate);
+              const isReturning = returningId === borrow._id;
 
-                <div className="p-6">
-                  <h2 className="font-heading text-2xl text-foreground">
-                    {borrow.bookTitle}
-                  </h2>
+              const book = {
+                _id: borrow.bookId,
+                title: borrow.bookTitle,
+                author: borrow.bookAuthor || "Unknown Author",
+                image: borrow.bookImage,
+                category: borrow.bookCategory || "Borrowed Book",
+                subtitle: "",
+                description: "",
+                publisher: "",
+                publishedYear: "",
+                pages: "",
+                language: "",
+                format: "",
+                tags: [],
+                featured: false,
+                availableCopies: 0,
+                totalCopies: 0,
+              };
 
-                  <div className="mt-5 space-y-3 border-t border-border pt-5 text-sm">
-                    <div className="flex justify-between gap-3">
-                      <span className="text-muted">Borrowed on</span>
-                      <span className="text-foreground">
-                        {new Date(borrow.borrowDate).toLocaleDateString()}
+              return (
+                <div key={borrow._id} className="min-w-0">
+                  <BookCard book={book} />
+
+                  <div className="mt-3 rounded-xl border border-border bg-surface p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-ui text-[10px] uppercase tracking-wider text-muted">
+                        Return Deadline
+                      </span>
+
+                      <span className="text-xs font-semibold text-foreground">
+                        {formatDate(borrow.returnDate)}
                       </span>
                     </div>
 
-                    <div className="flex justify-between gap-3">
-                      <span className="text-muted">Return by</span>
-                      <span className="font-semibold text-accent">
-                        {new Date(borrow.returnDate).toLocaleDateString()}
+                    <div className="mt-3 flex items-center justify-between gap-3">
+                      <span className="font-ui text-[10px] uppercase tracking-wider text-muted">
+                        Borrow Status
+                      </span>
+
+                      <span
+                        className={`rounded-full border px-3 py-1 text-[10px] font-bold ${status.color} ${status.background} ${status.border}`}
+                      >
+                        {status.label}
                       </span>
                     </div>
-                  </div>
 
-                  <div className="mt-6 flex flex-col gap-4">
-                    <span className="w-fit rounded-full border border-accent/30 bg-accent/10 px-3 py-1.5 font-ui text-xs font-semibold text-accent">
-                      CURRENTLY BORROWED
-                    </span>
-
-                    <button
-                      onClick={() => handleReturn(borrow._id)}
-                      className="w-full rounded-lg border border-red-400/30 px-5 py-3 font-ui text-sm font-bold text-red-400 transition-colors hover:bg-red-400/10"
-                    >
-                      RETURN BOOK ↗
-                    </button>
+                    <div className="mt-4 border-t border-border pt-4">
+                      <button
+                        type="button"
+                        onClick={() => handleReturn(borrow._id)}
+                        disabled={Boolean(returningId)}
+                        className="w-full rounded-lg border border-red-400/25 bg-red-400/[0.04] px-5 py-3 font-ui text-xs font-bold tracking-wide text-red-400 transition-colors hover:border-red-400/50 hover:bg-red-400/10 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        {isReturning ? "RETURNING..." : "RETURN BOOK ↗"}
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </article>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
