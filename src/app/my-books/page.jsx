@@ -77,6 +77,41 @@ export default function MyBooksPage() {
     }
   };
 
+  const handleDelete = async (bookId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this book?",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const { data, error: tokenError } = await authClient.token();
+
+      if (tokenError || !data?.token) {
+        throw new Error("Unable to verify your session.");
+      }
+
+      const response = await fetch(`${API_URL}/books/${bookId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${data.token}`,
+        },
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to delete book.");
+      }
+
+      setBooks((prev) => prev.filter((book) => book._id !== bookId));
+
+      alert("Book deleted successfully!");
+    } catch (err) {
+      alert(err.message || "Something went wrong.");
+    }
+  };
+
   useEffect(() => {
     if (isPending) return;
 
@@ -288,6 +323,12 @@ export default function MyBooksPage() {
                       className="mt-3 w-full rounded-lg border border-accent px-4 py-3 text-sm font-bold text-accent hover:bg-accent hover:text-background"
                     >
                       EDIT BOOK
+                    </button>
+                    <button
+                      onClick={() => handleDelete(book._id)}
+                      className="mt-2 w-full rounded-lg border border-red-500/40 px-4 py-3 text-sm font-bold text-red-400 hover:bg-red-500 hover:text-white"
+                    >
+                      DELETE BOOK
                     </button>
                   </div>
                 </article>
